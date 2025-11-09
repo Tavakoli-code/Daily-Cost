@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/index.css">
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <header>
+        <a href="index">Today</a>
+        <a href="reports">Report</a>
+        <a href="category">Categories</a>
+        <a href="logout">Logout</a>
+    </header>
+
+    <form action="/report_date" method="post" class="date-form" id="reportForm">
+        <div class="input-container">
+            <label for="year">Year</label>
+            <select name="year" id="year">
+                <% if (locals.year) { %>
+                    <option value="<%= year %>">
+                        <%= year %>
+                    </option>
+                    <% } for( let i=1399; i < 1411; i++ ) { %>
+                        <option value="<%= i %>">
+                            <%= i %>
+                        </option>
+                        <% } %>
+            </select>
+        </div>
+        <div class="input-container">
+            <label for="month">Month</label>
+            <select name="month" id="month">
+                <% if (locals.month) { %>
+                    <option value="<%= month %>">
+                        <%= month %>
+                    </option>
+                    <% } %>
+                        <option value="01">01</option>
+                        <option value="02">02</option>
+                        <option value="03">03</option>
+                        <option value="04">04</option>
+                        <option value="05">05</option>
+                        <option value="06">06</option>
+                        <option value="07">07</option>
+                        <option value="08">08</option>
+                        <option value="09">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+            </select>
+        </div>
+        <button>Generate</button>
+    </form>
+
+    <div class="container">
+
+        <div>
+            <h2>Budget Overview</h2>
+            <table>
+                <tr>
+                    <th>Amount</th>
+                    <th>Spent</th>
+                    <th>Remain</th>
+                </tr>
+                <tr>
+                    <% if (locals.totalSource && locals.totalSpent) { %>
+
+                        <td id="totalSource">
+                            <%= locals.totalSource %>
+                        </td>
+                        <td id="totalSpent">
+                            <%= locals.totalSpent %>
+                        </td>
+                        <td id="remain">
+                            <%= locals.totalSource - locals.totalSpent %>
+                        </td>
+                        <% } %>
+                </tr>
+            </table>
+            <canvas id="budgetChart" width="400" height="200"></canvas>
+        </div>
+        <div>
+            <h2>Spent per Category</h2>
+            <% if (locals.totalPerCategory && totalPerCategory.length> 0) { %>
+                <table>
+                    <tr>
+                        <% totalPerCategory.forEach(category=> { %>
+                            <th class="category-name">
+                                <%= category.category %>
+                            </th>
+                            <% }) %>
+                    </tr>
+                    <tr>
+                        <% totalPerCategory.forEach(category=> { %>
+                            <td class="category-sum">
+                                <%= category.sum %>
+                            </td>
+                            <% }) %>
+                    </tr>
+                </table>
+                <canvas id="categoryChart" width="400" height="200"></canvas>
+                <% } %>
+        </div>
+    </div>
+
+
+    <!-- Include libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <!-- Auto-select current Jalali year/month and render charts -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const today = new persianDate();
+            const yearSelect = document.getElementById("year");
+            const monthSelect = document.getElementById("month");
+
+            if (yearSelect) yearSelect.value = today.year();
+            if (monthSelect) monthSelect.value = String(today.month()).padStart(2, "0");
+
+            const chartTotalSource = parseInt(document.getElementById("totalSource").innerText, 10);
+            const chartTotalSpent = parseInt(document.getElementById("totalSpent").innerText, 10);
+            const chartTotalRemain = parseInt(document.getElementById("remain").innerText, 10);
+            const categoryElements = document.querySelectorAll(".category-name");
+            const sumElements = document.querySelectorAll(".category-sum");
+
+            const categoryNames = Array.from(categoryElements).map(el => el.textContent.trim());
+            const categorySums = Array.from(sumElements).map(el => Number(el.textContent.trim()));
+
+            // Budget Doughnut Chart
+            const ctxBudget = document.getElementById('budgetChart');
+            if (ctxBudget) {
+                new Chart(ctxBudget.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Spent', 'Remaining'],
+                        datasets: [{
+                            data: [chartTotalSpent, chartTotalRemain],
+                            backgroundColor: ['#e74c3c', '#27ae60'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        // responsive: true,
+                        // maintainAspectRatio: false,
+                        plugins: {
+                            title: { display: true, text: '', font: { size: 16 } },
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+
+            // Category Bar Chart
+            const ctxCategory = document.getElementById('categoryChart');
+            if (ctxCategory && categoryNames.length > 0) {
+                new Chart(ctxCategory.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: categoryNames,
+                        datasets: [{
+                            label: 'Amount Spent',
+                            data: categorySums,
+                            backgroundColor: '#3498db'
+                        }]
+                    },
+                    options: {
+                        scales: { y: { beginAtZero: true } },
+                        plugins: {
+                            title: { display: true, text: '', font: { size: 16 } },
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,341 @@
+:root {
+  /* Theme Colors */
+  --color-primary: #4caf50;
+  --color-secondary: #2196f3;
+  --color-accent: #ff9800;
+  --color-danger: #f44336;
+
+  /* Neutrals */
+  --color-bg: #f4f6f9;
+  --color-card: #ffffff;
+  --color-border: #555555;
+
+  /* Text */
+  --text-primary: #212121;
+  --text-secondary: #555555;
+
+  /* Shadows */
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-hard: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+}
+
+[data-theme='dark'] {
+  --color-bg: #121212;
+  --color-card: #1e1e1e;
+  --color-text: #f5f5f5;
+  --color-border: #333;
+}
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+    font-size: 20px;
+    columns: var(--text-secondary);
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--text-primary);
+  font-family: 'Poppins', sans-serif;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 16px 0px;
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    background-color: var(--color-bg);
+    box-shadow: var(--shadow-soft);
+    z-index: 1;
+}
+
+header a {
+    text-decoration: none;
+    color: var(--color-primary);
+    font-weight: bold;
+    transition: all 0.2s ease-out;
+}
+
+a:hover {
+    color: var(--color-accent);
+}
+
+/* .chart-card {
+  background: var(--color-card);
+  box-shadow: var(--shadow-soft);
+} */
+
+input, select, textarea {
+    padding: 5px;
+    border: 1px groove var(--color-border);
+    border-radius: 8px;
+    transition: all 0.2s ease-out;
+}
+
+input:hover, select:hover, textarea:hover {
+    border-color: var(--color-accent);
+}
+
+button {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+
+button:hover {
+  background: var(--color-accent);
+}
+
+/* .alert {
+  background: var(--color-danger);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+} */
+
+h2 {
+    font-size: 1.2rem;
+    color: var(--text-primary)
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 100px 100px;
+}
+
+/* table tr {
+    gap: 50px;
+} */
+
+table {
+    text-align: left;
+    min-width: 500px;
+}
+
+th {
+    font-weight: bold;
+    color: #57c05c;
+    margin-top: 8px;
+}
+
+.expenses {
+    overflow-y: auto;
+}
+
+.expenses p {
+    margin-bottom: 16px;
+}
+
+.expenses .chart {
+    margin-top: 40px;
+}
+
+.new-expense {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 50px;
+    /* width: 30vw; */
+}
+/* 
+.new-expense form {
+    display: flex;
+    flex-direction: column;
+} */
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+}
+
+form .section {
+    width: 35vw;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 5%;
+}
+
+form .section .first-row-item {
+    grid-column: span 3;
+}
+
+form .section .second-row-item {
+    grid-column: span 2;
+}
+
+.new-expense form button {
+    margin-top: 16px;
+    font-weight: bold;
+    width: 100%;
+}
+
+.new-expense form label {
+    margin-top: 16px;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.inline-form {
+    display: flex;
+    gap: 10px;
+    align-items: end;
+}
+
+.inline-form div {
+    display: flex;
+    flex-direction: column;
+}
+
+.inline-form button {
+    padding: 7px;
+    font-size: 0.9rem;
+}
+
+.report {
+    display: flex;
+    justify-content: space-between;
+    padding: 50px 200px 50px 150px;
+}
+
+.report h2 {
+    margin-bottom: 8px;
+}
+
+.chart {
+    width: 300px;
+    height: 300px;
+}
+
+.overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.overlay:target {
+    display: flex;
+}
+
+.popup {
+    background-color: var(--color-bg);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-hard);
+}
+
+.popup h3 {
+    margin-bottom: 10px;
+}
+
+.popup div {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.popup div label {
+    font-weight: bold;
+}
+
+.popup form button {
+    font-size: 0.8rem;
+    padding: 8px 18px;
+    margin-right: 10px;
+}
+
+.popup .popup-btn {
+    font-size: 0.8rem;
+    padding: 8px 10px;
+    background-color: #4caf50;
+    border-radius: 8px;
+    color: #fff;
+    transition: all 0.2s ease-out;
+}
+
+.popup a:hover {
+    color: #fff !important;
+    background-color: #ff9800;
+}
+
+.popup p {
+    margin-bottom: 30px;
+}
+
+.container svg {
+    height: 20px;
+    width: 20px;
+    color: #4caf50;
+    transition: all 0.2s ease-out;
+}
+
+.container svg:hover {
+    color: #ff9800;
+}
+
+.container a {
+    text-decoration: none;
+    /* color: #4caf50; */
+    margin-right: 10px;
+}
+
+.date-form {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    gap: 20px;
+    position: relative;
+    top: 80px;
+}
+
+canvas {
+    margin-top: 20px;
+}
+
+#budgetChart {
+    height: 300px !important;
+    width: 300px !important;
+}
+
+@media (max-width: 567px) {
+    *{
+        font-size: 20px;
+    }
+
+    .container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 25px;
+        gap: 50px;
+    }
+
+    .new-expense div {
+        width: 100%;
+    }
+
+    .new-expense form .section {
+        width: 100%;
+    }
+
+    .report {
+        display: flex;
+        flex-direction: column  ;
+        gap: 32px;
+        padding: 25px;
+    }
+}

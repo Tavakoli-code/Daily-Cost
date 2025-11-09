@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/index.css">
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.js"></script>
+
+</head>
+
+<body>
+
+    <header>
+        <a href="">Today</a>
+        <a href="reports">Report</a>
+        <a href="category">Categories</a>
+        <a href="logout">Logout</a>
+    </header>
+
+    <div class="container">
+
+        <div class="expenses">
+            <% if (costs && costs.length> 0) { %>
+                <h2>Last 7 days</h2>
+                <table>
+                    <tr>
+                        <th>Amount</th>
+                        <th>Notes</th>
+                        <th>Date</th>
+                        <th></th>
+                    </tr>
+                    <% var totalCost=0; costs.forEach(cost=> { totalCost += cost.amount %>
+                        <tr>
+                            <td>
+                                <%= cost.amount %>
+                            </td>
+                            <td>
+                                <%= cost.note %>
+                            </td>
+                            <td>
+                                <%= cost.jalaliDate %>
+                                    <!-- <%= new Date(cost.date).toLocaleDateString("en-US", { month: "2-digit" ,
+                                        day: "2-digit" }) %> -->
+                            </td>
+                            <td>
+                                <!-- Edit cost button -->
+                                <a href="#popupForm_<%= cost.id %>" id="trigger">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-pen-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
+                                    </svg>
+                                </a>
+                                <!-- Delete cost button -->
+                                <a href="#confirmDelete_<%= cost.id %>">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+                                    </svg>
+                                </a>
+                                <!-- Edit Form Popup -->
+                                <div id="popupForm_<%= cost.id %>" class="overlay">
+                                    <div class="popup">
+                                        <h3>Edit</h3>
+                                        <form action="/edit_cost" method="POST">
+                                            <input type="number" name="id" id="id" value="<%= cost.id %>" hidden
+                                                required>
+
+                                            <div class="section">
+
+                                                <div class="input-container first-row-item">
+                                                    <label for="amount">Amount</label>
+                                                    <input type="text" name="amount" id="amount" required
+                                                        value="<%= cost.amount %>">
+                                                </div>
+
+                                                <div class="input-container first-row-item">
+                                                    <label for="category">Category</label>
+                                                    <select name="category" id="category">
+                                                        <% locals.categories.forEach(category=> { %>
+                                                            <option value="<%= category.id %>">
+                                                                <%= category.category %>
+                                                            </option>
+                                                            <% }) %>
+                                                    </select>
+                                                </div>
+
+                                                <div class="input-container second-row-item">
+                                                    <label for="year">Year</label>
+                                                    <select name="year" id="editYear">
+                                                        <% if (cost.date) { %>
+                                                            <option value="<%= formatJalali(cost.date, " jYYYY" ) %>">
+                                                                <%= formatJalali(cost.date, "jYYYY" ) %>
+                                                            </option>
+                                                            <% } %>
+                                                                <% for( let i=1399; i < 1411; i++ ) { %>
+                                                                    <option value="<%= i %>">
+                                                                        <%= i %>
+                                                                    </option>
+                                                                    <% } %>
+                                                    </select>
+                                                </div>
+
+                                                <div class="input-container second-row-item">
+                                                    <label for="month">Month</label>
+                                                    <select name="month" id="editMonth">
+                                                        <% if (cost.date) { %>
+                                                            <option value="<%= formatJalali(cost.date, " jMM" ) %>">
+                                                                <%= formatJalali(cost.date, "jMM" ) %>
+                                                            </option>
+                                                            <% } %>
+                                                                <option value="01">01</option>
+                                                                <option value="02">02</option>
+                                                                <option value="03">03</option>
+                                                                <option value="04">04</option>
+                                                                <option value="05">05</option>
+                                                                <option value="06">06</option>
+                                                                <option value="07">07</option>
+                                                                <option value="08">08</option>
+                                                                <option value="09">09</option>
+                                                                <option value="10">10</option>
+                                                                <option value="11">11</option>
+                                                                <option value="12">12</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="input-container second-row-item">
+                                                    <label for="day">Day</label>
+                                                    <select name="day" id="editDay">
+                                                        <% if (cost.date) { %>
+                                                            <option value="<%= formatJalali(cost.date, " jDD" ) %>">
+                                                                <%= formatJalali(cost.date, "jDD" ) %>
+                                                            </option>
+                                                            <% } %>
+                                                                <% for( let day=1; day < 32; day++ ) { %>
+                                                                    <option value="<%= day %>">
+                                                                        <%= day %>
+                                                                    </option>
+                                                                    <% } %>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                            <div class="input-container">
+                                                <label for="notes">Notes</label>
+                                                <textarea name="notes" id="notes" cols="15"
+                                                    rows="4"><%= cost.note %></textarea>
+                                            </div>
+                                            <div>
+                                                <button>Save</button>
+                                                <a href="/index" class="popup-btn">Cancel</a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- Confirm Delete Popup -->
+                                <div id="confirmDelete_<%= cost.id %>" class="overlay">
+                                    <div class="popup">
+                                        <h3>Delete Category</h3>
+                                        <p>Are you sure you want to delete '<%= cost.amount %>, <%= cost.note %>'
+                                                    and all related data?</p>
+                                        <div>
+                                            <a href="/delete_cost/<%= cost.id %>" class="popup-btn">Yes</a>
+                                            <a href="#" class="popup-btn">No</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                            <tr>
+                                <th>Total</th>
+                                <td>
+                                    <%= totalCost %>
+                                </td>
+                            </tr>
+                </table>
+                <% } else { %>
+                    <h2>No spent for last 7 days.</h2>
+                    <% } %>
+        </div>
+        <div class="new-expense">
+            <div>
+                <h2>Add Expense</h2>
+                <form action="/add_expense" method="POST">
+                    <div class="section">
+
+                        <div class="input-container first-row-item">
+                            <label for="amount">Amount</label>
+                            <input type="text" name="amount" id="amount" required>
+                        </div>
+                        <div class="input-container first-row-item">
+                            <label for="category">Category</label>
+                            <select name="category" id="category">
+                                <% locals.categories.forEach(category=> { %>
+                                    <option value="<%= category.id %>">
+                                        <%= category.category %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                        </div>
+                        <div class="input-container second-row-item">
+                            <label for="year">Year</label>
+                            <select name="year" id="year">
+                                <% for( let i=1399; i < 1411; i++ ) { %>
+                                    <option value="<%= i %>">
+                                        <%= i %>
+                                    </option>
+                                    <% } %>
+                            </select>
+                        </div>
+                        <div class="input-container second-row-item">
+                            <label for="month">Month</label>
+                            <select name="month" id="month">
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08">08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                        </div>
+                        <div class="input-container second-row-item">
+                            <label for="day">Day</label>
+                            <select name="day" id="day">
+                                <% for( let day=1; day < 32; day++ ) { %>
+                                    <option value="<%= day %>">
+                                        <%= day %>
+                                    </option>
+                                    <% } %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <label for="notes">Notes</label>
+                        <textarea name="notes" id="notes" cols="15" rows="4"></textarea>
+                    </div>
+                    <button>Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const today = new persianDate();
+            const yearSelect = document.getElementById("year");
+            const monthSelect = document.getElementById("month");
+            const daySelect = document.getElementById("day");
+            const form = document.getElementById("reportForm");
+
+            // Auto-select current Jalali date
+            yearSelect.value = today.year();
+            monthSelect.value = String(today.month()).padStart(2, "0");
+            daySelect.value = String(today.date()).padStart(2, "0");
+        });
+    </script>
+</body>
+
+</html>

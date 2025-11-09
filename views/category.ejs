@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/category.css">
+    <title>Categories</title>
+</head>
+
+<body>
+    <header>
+        <a href="index">Today</a>
+        <a href="reports">Report</a>
+        <a href="category">Categories</a>
+        <a href="logout">Logout</a>
+    </header>
+    <div class="container">
+
+        <div>
+            <h2>Spent</h2>
+            <form action="/add_category" method="post" class="inline-form">
+                <input type="text" name="new_category" id="new_category" required placeholder="Category">
+                <button>Add</button>
+            </form>
+
+            <% if (categories && categories.length> 0) { categories.forEach(category=> { %>
+                <div class="row">
+                    <div>
+                        <%= category.category %>
+                    </div>
+                    <nav>
+                        <a href="#popupForm_<%= category.id %>" id="trigger">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-pen-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
+                            </svg>
+                        </a>
+
+                        <!-- Rename Form Popup -->
+                        <div id="popupForm_<%= category.id %>" class="overlay">
+                            <div class="popup">
+                                <h3>Rename</h3>
+                                <form action="/rename_category">
+                                    <input type="text" name="name" id="name" value="<%= category.category %>">
+                                    <input type="number" name="categoryId" id="categoryId" value="<%= category.id %>"
+                                        hidden>
+                                    <div>
+                                        <button>Save</button>
+                                        <a href="/category" class="popup-btn">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <a href="#confirmDelete_<%= category.id %>">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+                            </svg>
+                        </a>
+
+                        <!-- Confirm Delete Popup -->
+                        <div id="confirmDelete_<%= category.id %>" class="overlay">
+                            <div class="popup">
+                                <h3>Delete Category</h3>
+                                <p>Are you sure you want to delete "<%= category.category %>" and all related data?</p>
+                                <div>
+                                    <a href="/delete_category/<%= category.id %>" class="popup-btn">Yes</a>
+                                    <a href="#" class="popup-btn">No</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </nav>
+                </div>
+                <% }) %>
+                    <% } else { %>
+                        <h2>Add categories to show them here.</h2>
+                        <% } %>
+        </div>
+
+
+        <div>
+            <h2>Income</h2>
+            <form class="new-budget" action="add_source" method="post" class="inline-form">
+                <input type="text" name="name" id="new_source" required placeholder="Source">
+                <input type="number" name="amount" id="amount" placeholder="Amount">
+                <input type="date" name="date" id="date">
+                <button>Add</button>
+            </form>
+
+            <% if (sources && sources.length> 0) { var total=0; sources.forEach(source => { total += source.amount %>
+
+                <div class="row">
+                    <div>
+                        <%= source.name %>
+                    </div>
+                    <div>
+                        <%= source.amount %>
+                    </div>
+                    <div>
+                        <%= new Date(source.date).toLocaleDateString("en-US", {month: "2-digit" , day: "2-digit" }) %>
+                    </div>
+
+                    <nav>
+                        <a href="#sourceEditForm_<%= source.id %>" id="trigger">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-pen-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
+                            </svg>
+                        </a>
+                        <a href="#sourceDeleteForm_<%= source.id %>">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+                            </svg>
+                        </a>
+                    </nav>
+
+                    <!-- Edit Form Popup -->
+                    <div id="sourceEditForm_<%= source.id %>" class="overlay">
+                        <div class="popup">
+                            <h2>Edit</h2>
+                            <form action="/edit_source" method="post">
+                                <div class="input-container">
+                                    <label for="name">Name</label>
+                                    <input type="text" name="name" id="name" required value="<%= source.name %>">
+                                </div>
+                                <div class="input-container">
+                                    <label for="amount">Amount</label>
+                                    <input type="number" name="amount" id="amount" required
+                                        value="<%= source.amount %>">
+                                </div>
+                                <div class="input-container">
+                                    <label for="date">Date</label>
+                                    <%= source.date.toISOString().slice(0, 10); %>
+                                        <input type="date" name="date" id="date" required
+                                            value="<%= source.date.toISOString().slice(0, 10); %>">
+                                </div>
+                                <input type="number" name="sourceId" id="sourceId" value="<%= source.id %>" hidden>
+                                <div>
+                                    <button>Save</button>
+                                    <a href="/category" class="popup-btn">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Delete Popup -->
+                    <div id="sourceDeleteForm_<%= source.id %>" class="overlay">
+                        <div class="popup">
+                            <h2>Delete Income</h2>
+                            <p>Are you sure you want to delete "<%= source.name %>" and all related data?</p>
+                            <div>
+                                <a href="/delete_source/<%= source.id %>" class="popup-btn">Yes</a>
+                                <a href="#" class="popup-btn">No</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% }); } else {%>
+                    <h2>Add categories to show them here.</h2>
+                    <% } %>
+                        <!-- <div>
+                        <b>Total</b>
+                        <%= total %>
+                    </div> -->
+
+        </div>
+    </div>
+
+    </div>
+</body>
+
+</html>
