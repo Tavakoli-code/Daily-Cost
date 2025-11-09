@@ -7,7 +7,7 @@ import pgSession from "connect-pg-simple";
 import moment from "moment-jalaali";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const db = new pg.Client({
     user: "postgres",
     host: "localhost",
@@ -277,6 +277,6 @@ app.post("/report_date", async (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`✅ Server running on http://localhost:${port}`);
+    console.log(`✅ Server running on ${port}`);
 
 });
