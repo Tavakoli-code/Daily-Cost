@@ -9,13 +9,14 @@ import moment from "moment-jalaali";
 const app = express();
 const port = process.env.PORT || 3000;
 const db = new pg.Client({
-    user: "postgres",
-    host: "localhost",
-    database: "daily_cost",
-    password: "xyz.9870",
-    port: 5432,
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 });
-db.connect();
+
+db.connect()
+  .then(() => console.log("Connected to PostgreSQL"))
+  .catch(err => console.error("Database connection error:", err.stack));
+
 
 moment.loadPersian({ dialect: "persian-modern" });
 app.use(express.json());
